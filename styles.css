@@ -1,5 +1,8 @@
 body {
     background-color: #30362f;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Estándar */
 }
 
 #calc {

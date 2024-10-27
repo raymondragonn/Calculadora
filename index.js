@@ -7,16 +7,16 @@ let currentArr = arr1;
 let isSecondNumber = false;
 
 const valueOfNumbers = {
-    'bottom22': 0,    
-    'bottom17': 1,
-    'bottom18': 2,
-    'bottom19': 3,
-    'bottom13': 4,
-    'bottom14': 5,
-    'bottom15': 6,
-    'bottom9': 7,
-    'bottom10': 8,
-    'bottom11': 9
+    'bottom17': '1',
+    'bottom18': '2',
+    'bottom19': '3',
+    'bottom13': '4',
+    'bottom14': '5',
+    'bottom15': '6',
+    'bottom9': '7',
+    'bottom10': '8',
+    'bottom11': '9',
+    'bottom22': '0', 
 };
 
 const control = {
@@ -58,6 +58,7 @@ function resetCalc() {
 
 function valueInArray(idBottom) {
     const value = valueOfNumbers[idBottom];
+    console.log(value)
 
     if(!isSecondNumber) {
         arr1.push(value);
@@ -173,7 +174,7 @@ function needTwoNum(idBottom) {
 function newNumber(){
     function handleClick(event) {
         const buttonId = event.target.id;
-        
+        console.log(event.target.id);
         if(valueOfNumbers[buttonId]){
             valueInArray(buttonId);
         }
