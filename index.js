@@ -5,6 +5,7 @@ let number1 = 0;
 let number2 = 0;
 let currentArr = arr1;
 let isSecondNumber = false;
+let currentOperation = undefined;
 
 const valueOfNumbers = {
     'bottom17': '1',
@@ -24,7 +25,7 @@ const control = {
     'bottom2': 'CE',
     'bottom3': 'C',
     'bottom4': '←',
-    'bottom24': '='
+    'bottom23': '.',
 }
 
 const opOneNumber = {
@@ -32,7 +33,6 @@ const opOneNumber = {
     'bottom6': 'x²',
     'bottom7': '√',
     'bottom21': '±',
-    'bottom23': '.',
 };
 
 const opTwoNumbers = {
@@ -40,6 +40,7 @@ const opTwoNumbers = {
     'bottom12': '×',
     'bottom16': '-',
     'bottom20': '+',
+    'bottom24': '=',
 }
 
 function updateScreen(result = 0) {
@@ -53,21 +54,22 @@ function resetCalc() {
     number2 = 0;
     currentArr = arr1;
     isSecondNumber = false;
+    currentOperation = undefined;
     document.getElementById('screen').textContent = 0;
 }
 
 function valueInArray(idBottom) {
     const value = valueOfNumbers[idBottom];
-    console.log(value)
 
     if(!isSecondNumber) {
         arr1.push(value);
-        number1 = parseInt(arr1.join(''));
+        number1 = parseFloat(arr1.join(''));
         updateScreen(number1);
     }
     else{
         arr2.push(value);
-        number2 = parseInt(arr2.join(''));
+        number2 = parseFloat(arr2.join(''));
+        console.log(arr2);
         updateScreen(number2);
     }
 }
@@ -76,6 +78,11 @@ function controlBottoms(idBottom){
     switch(idBottom) {
         case 'bottom1': 
             console.log('%');
+            if (isSecondNumber) {
+                number = number2 / 100;
+            } else {
+                document.getElementById('screen').textContent = number2;
+            }
             break;
         case 'bottom2':
             console.log('CE');
@@ -105,8 +112,26 @@ function controlBottoms(idBottom){
                 document.getElementById('screen').textContent = number1;
             }
             break;
-        case 'bottom24':
-            console.log('=');
+        case 'bottom23':
+            if (isSecondNumber) {
+                if(!arr1.includes('.')){
+                    console.log('.');
+                    arr2.push('.');
+                    console.log(arr2);
+                    number2 = parseFloat(arr2.join(''));
+                    console.log(number2);
+                    updateScreen(number2);
+                }
+            } else {
+                if(!arr1.includes('.')){
+                    console.log('.');
+                    arr1.push('.');
+                    console.log(arr1);
+                    number1 = parseFloat(arr1.join(''));
+                    console.log(number1);
+                    updateScreen(number1);
+                }
+            }
             break;
         default: 
             break;
@@ -133,13 +158,6 @@ function needOneNum(idBottom) {
             case 'bottom21':
             console.log('±');
             arr1.unshift('-');
-            number1 = parseInt(arr1.join(''));
-            updateScreen(number1);
-            break;
-        case 'bottom23':
-            console.log('.');
-            arr1.push('.');
-            console.log(arr1);
             number1 = parseFloat(arr1.join(''));
             updateScreen(number1);
             break;
@@ -153,18 +171,26 @@ function needTwoNum(idBottom) {
         case 'bottom8':
             console.log('÷');
             number1 = number1 / number2;
+            updateScreen(number1);
             break;
         case 'bottom12':
             console.log('×');
             number1 = number1 * number2;
+            updateScreen(number1);
             break;
         case 'bottom16':
             console.log('-');
             number1 = number1 - number2;
+            updateScreen(number1);
             break;
         case 'bottom20':
             console.log('+');
             number1 = number1 + number2;
+            updateScreen(number1);
+            break;
+        case 'bottom24':
+            console.log('=');
+            updateScreen(number1);
             break;
         default: 
             break;
@@ -173,23 +199,31 @@ function needTwoNum(idBottom) {
 
 function newNumber(){
     function handleClick(event) {
-        const buttonId = event.target.id;
-        console.log(event.target.id);
-        if(valueOfNumbers[buttonId]){
-            valueInArray(buttonId);
+        const bottomId = event.target.id;
+
+        console.log(number1, number2);
+
+        if(valueOfNumbers[bottomId]){
+            valueInArray(bottomId);
         }
 
-        if(opOneNumber[buttonId]){
-            needOneNum(buttonId);
+        if(opOneNumber[bottomId]){
+            needOneNum(bottomId);
         }
 
-        if(opTwoNumbers[buttonId]){
-            needTwoNum(buttonId);
+        if(opTwoNumbers[bottomId]){
             isSecondNumber = true;
+            if (currentOperation) {
+                needTwoNum(currentOperation);
+                arr2 = [];
+                number2 = 0;
+
+            }
+            currentOperation = bottomId;
         }
 
-        if(control[buttonId]) {
-            controlBottoms(buttonId);
+        if(control[bottomId]) {
+            controlBottoms(bottomId);
         }
     }
 
